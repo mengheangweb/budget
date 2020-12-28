@@ -18,3 +18,8 @@ use App\Http\Controllers\TransactionController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/transaction', [TransactionController::class, 'index']);
+Route::get('/transaction/create', [TransactionController::class, 'create']);
+Route::post('/transaction/store', [TransactionController::class, 'store']);
+Route::get('/transaction/edit/{id}', [TransactionController::class, 'edit']);
+Route::patch('/transaction/update/{id}', [TransactionController::class, 'update']);
+Route::delete('/transaction/delete/{id}', [TransactionController::class, 'delete']);
