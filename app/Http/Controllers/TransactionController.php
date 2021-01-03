@@ -5,21 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Category;
+use App\Models\Tag;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::paginate(5);
+        $search = $request->search;
 
-        return view('transaction.index', compact('transactions'));
+        $query = Transaction::query();
+
+        if($search)
+        {
+            $query->where('description','like',"%{$search}%");
+            $query->OrWhere('amount','like',"%{$search}%");
+        }
+
+        $transactions = $query->paginate(5);
+
+        $trashed = Transaction::onlyTrashed()->get();
+
+        return view('transaction.index', compact('transactions', 'trashed'));
     }
 
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('transaction.create', compact('categories'));
+        return view('transaction.create', compact('categories', 'tags'));
     }
 
     public function store(Request $request)
@@ -28,15 +42,18 @@ class TransactionController extends Controller
             'category' => 'required',
             'date' => 'required|date_format:Y-m-d',
             'description' => 'required',
-            'amount' => 'required|numeric|max:2000'
+            'amount' => 'required|numeric|max:2000',
+            'tag' => 'required'
         ]);
 
-       Transaction::create([
-            'category_id' => $request->category,
-            'date' => $request->date,
-            'description' => $request->description,
-            'amount' => $request->amount
-        ]);
+        $transaction = Transaction::create([
+                        'category_id' => $request->category,
+                        'date' => $request->date,
+                        'description' => $request->description,
+                        'amount' => $request->amount
+                    ]);
+
+        $transaction->tag()->attach($request->tag);
 
         return redirect('/transaction/create')->with('message', "Added successfully");
     }
@@ -44,8 +61,11 @@ class TransactionController extends Controller
     public function edit($id)
     {
         $transaction = Transaction::findOrFail($id);
+        $categories = Category::all();
+        $tags = Tag::all();
+        $checked = $transaction->tag->pluck('id')->toArray();
 
-        return view('transaction.edit', compact('transaction'));
+        return view('transaction.edit', compact('transaction', 'categories', 'tags','checked'));
     }
 
     public function update(Request $request, $id)
@@ -53,7 +73,6 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
 
         $this->validate($request,[
-            'category_id' => $request->category,
             'category' => 'required',
             'date' => 'required|date_format:Y-m-d',
             'description' => 'required',
@@ -61,12 +80,15 @@ class TransactionController extends Controller
         ]);
 
        Transaction::whereId($id)->update([
+            'category_id' => $request->category,
             'date' => $request->date,
             'description' => $request->description,
             'amount' => $request->amount
         ]);
 
-        return redirect('/transaction')->with('message', "Edited successfully");
+        $transaction->tag()->sync($request->tag);
+
+        return redirect('/transaction?page='. $request->page)->with('message', "Edited successfully");
     }
 
     public function delete($id)
@@ -76,5 +98,14 @@ class TransactionController extends Controller
         $transaction->delete();
 
         return redirect('/transaction')->with('message', "Deleted successfully");
+    }
+
+    public function restore($id)
+    {
+        $transaction = Transaction::withTrashed()->whereId($id)->first();
+
+        $transaction->restore();
+
+        return redirect('/transaction')->with('message', "Restored successfully");
     }
 }

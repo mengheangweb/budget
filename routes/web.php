@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,10 @@ Route::post('/transaction/store', [TransactionController::class, 'store']);
 Route::get('/transaction/edit/{id}', [TransactionController::class, 'edit']);
 Route::patch('/transaction/update/{id}', [TransactionController::class, 'update']);
 Route::delete('/transaction/delete/{id}', [TransactionController::class, 'delete']);
+Route::get('/transaction/restore/{id}', [TransactionController::class, 'restore']);
+
+Route::prefix('category')->group(function() {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::get('/create', [CategoryController::class, 'create']);
+    Route::get('/view/{id}', [CategoryController::class, 'show']);
+});

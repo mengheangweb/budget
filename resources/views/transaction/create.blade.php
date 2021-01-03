@@ -38,6 +38,15 @@
                     <label for="amount">Amount</label>
                     <input value="{{ old('amount') }}" type="amount" name="amount" class="form-control" id="amount" placeholder="Enter Amount">
                 </div>
+                <div class="form-group  mb-3">
+                    <label for="amount">Tag</label>
+                    @foreach($tags as $tag)
+                    <div class="form-check">
+                        <input name="tag[]" class="form-check-input" type="checkbox" value="{{ $tag->id }}">
+                        <label class="form-check-label">{{ $tag->name }}</label>
+                    </div>
+                    @endforeach
+                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
     </div>
