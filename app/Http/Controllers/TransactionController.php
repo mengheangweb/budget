@@ -6,11 +6,20 @@ use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\Tag;
+use Auth;
 
 class TransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        // $this->middleware('timeRestrict');
+    }
+
     public function index(Request $request)
     {
+        $auth = Auth::user();
+
         $search = $request->search;
 
         $query = Transaction::query();
