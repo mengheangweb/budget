@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\TransactionCreated;
 use App\Models\Transaction;
 use App\Models\Category;
+use App\Models\User;
 use App\Models\Tag;
 use Auth;
 
@@ -30,6 +32,8 @@ class TransactionController extends Controller
             $query->OrWhere('amount','like',"%{$search}%");
         }
 
+        $query->where('user_id', Auth::user()->id);
+
         $transactions = $query->paginate(5);
 
         $trashed = Transaction::onlyTrashed()->get();
@@ -52,17 +56,24 @@ class TransactionController extends Controller
             'date' => 'required|date_format:Y-m-d',
             'description' => 'required',
             'amount' => 'required|numeric|max:2000',
-            'tag' => 'required'
+            'tag' => ''
         ]);
 
         $transaction = Transaction::create([
                         'category_id' => $request->category,
                         'date' => $request->date,
                         'description' => $request->description,
-                        'amount' => $request->amount
+                        'amount' => $request->amount,
+                        'user_id' => Auth::user()->id
                     ]);
 
         $transaction->tag()->attach($request->tag);
+
+        $auth = Auth::user()->id;
+
+        $user = User::where('id', $auth)->first();
+
+        $user->notify( new TransactionCreated($transaction));
 
         return redirect('/transaction/create')->with('message', "Added successfully");
     }

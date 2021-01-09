@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\NotificationListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +34,11 @@ Route::middleware(['timeRestrict'])->group(function () {
         Route::get('/create', [CategoryController::class, 'create']);
         Route::get('/view/{id}', [CategoryController::class, 'show']);
     });
-    
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/notification', [App\Http\Controllers\NotificationController::class, 'index'])->name('notificationList');
+    Route::get('/notification/read/{id}', [App\Http\Controllers\NotificationController::class, 'read'])->name('notificationRead');
+    Route::get('/notification/delete/{id}', [App\Http\Controllers\NotificationController::class, 'delete'])->name('notificationRead');
 });
 
 Auth::routes();

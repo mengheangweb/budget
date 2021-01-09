@@ -13,8 +13,9 @@ class Transaction extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = "transactions";
+    // protected $table = "transactions";
     protected $fillable = [
+        'user_id',
         'category_id',
         'date',
         'description',
@@ -28,6 +29,6 @@ class Transaction extends Model
 
     public function tag()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class, 'tag_transaction', 'tag_id', 'transaction_id');
     }
 }
