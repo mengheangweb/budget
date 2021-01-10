@@ -66,3 +66,12 @@
         @endforeach
       </ul>
 @endsection
+
+@push('scripts')
+<script>
+  // Echo.channel(`transaction`)
+  //   .listen('TransactionCreated', (e) => {
+  //       alert(e);
+  //   });
+</script>
+@endpush

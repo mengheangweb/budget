@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Notifications\TransactionCreated;
+use App\Events\TransactionCreated as NewTransactionCreated;
 use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\User;
@@ -74,6 +75,8 @@ class TransactionController extends Controller
         $user = User::where('id', $auth)->first();
 
         $user->notify( new TransactionCreated($transaction));
+
+        event(new NewTransactionCreated());
 
         return redirect('/transaction/create')->with('message', "Added successfully");
     }
