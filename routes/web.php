@@ -18,7 +18,7 @@ use App\Http\Controllers\NotificationListController;
 |
 */
 
-Route::middleware(['timeRestrict'])->group(function () {
+Route::middleware(['timeRestrict', 'lang'])->group(function () {
 
     Route::get('/', [HomeController::class, 'index']);
     Route::get('/transaction', [TransactionController::class, 'index']);
@@ -41,5 +41,11 @@ Route::middleware(['timeRestrict'])->group(function () {
     Route::get('/notification/delete/{id}', [App\Http\Controllers\NotificationController::class, 'delete'])->name('notificationRead');
 });
 
-Auth::routes();
+Route::get('/switch/{lang}', [App\Http\Controllers\LanguageController::class, 'switch'])->name('switch');
+
+Route::middleware(['lang'])->group(function () {
+
+    Auth::routes();
+
+});
 

@@ -6,8 +6,8 @@
     @include('component.message')
     @include('component.error')
 
-    <h1 class="display-6m">Transaction List</h1>
-    <a href="/transaction/create" class="btn btn-primary">Add New</a>
+    <h1 class="display-6m">{{ __('transaction.tran_list') }}</h1>
+    <a href="/transaction/create" class="btn btn-primary">{{ __('general.add_new') }}</a>
 
     <div class="row mt-3">
       <form action="/transaction" method="get">

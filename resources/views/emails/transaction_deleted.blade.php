@@ -1,0 +1,1 @@
+There was 1 transaction deleted.

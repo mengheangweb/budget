@@ -53,6 +53,13 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            @if(session()->get('lang') == 'en')
+                                <a class="nav-link text-danger" href="/switch/kh">KH</a>
+                            @else
+                                <a class="nav-link text-danger" href="/switch/en">EN</a>
+                            @endif
+                        </li>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))

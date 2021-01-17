@@ -24,7 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('transaction:softdelete')
+                ->everyMinute()
+                ->sendOutputTo(storage_path('/app/softdelete/'. time().'.txt'));
+
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Tag;
+use App\Jobs\TransactionDeleted;
 use Auth;
 
 class TransactionController extends Controller
@@ -58,6 +59,9 @@ class TransactionController extends Controller
             'description' => 'required',
             'amount' => 'required|numeric|max:2000',
             'tag' => ''
+        ],[],[
+            'category' => __('transaction.category'),
+            'description' => __('transaction.description')
         ]);
 
         $transaction = Transaction::create([
@@ -114,11 +118,13 @@ class TransactionController extends Controller
         return redirect('/transaction?page='. $request->page)->with('message', "Edited successfully");
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         $transaction = Transaction::findOrFail($id);
 
         $transaction->delete();
+
+        TransactionDeleted::dispatch($request->user(), $transaction)->delay(now()->addMinutes(1));
 
         return redirect('/transaction')->with('message', "Deleted successfully");
     }

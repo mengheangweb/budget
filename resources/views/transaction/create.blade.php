@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="display-6m">Transaction Create</h1>
+    <h1 class="display-6m">{{ __('transaction.tran_create') }}</h1>
     <a href="/transaction" class="btn btn-primary mb-5">List</a>
 
     <div class="row">
