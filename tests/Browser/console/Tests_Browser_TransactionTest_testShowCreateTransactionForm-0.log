@@ -1,0 +1,8 @@
+[
+    {
+        "level": "SEVERE",
+        "message": "webpack-internal:\/\/\/.\/resources\/js\/custom.js 4:37 Uncaught ReferenceError: userId is not defined",
+        "source": "javascript",
+        "timestamp": 1611933603620
+    }
+]
